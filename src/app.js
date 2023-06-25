@@ -2,11 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const router = require("./routes");
 const cors = require("cors");
-const { json } = require("sequelize");
 const ClientError = require("./app/helpers/response/ClientError");
-const SuccessResponse = require("./app/helpers/response/SuccessResponse");
 const successResponseMiddleware = require("./app/helpers/response/SuccessResponse");
 const app = express();
+require("dotenv").config;
+
+
 app.use("/public", express.static("public"));
 app.use(bodyParser.json());
 app.use(bodyParser.text());
@@ -39,3 +40,9 @@ app.use((err, req, res, next) => {
 app.listen(5002, () => {
   console.log("Server is running on port 5002");
 });
+
+
+// TODO: Handle Users Address 
+// TODO: Handle Users Profile
+// TODO: Handle Users Points
+// TODO: Handle Users Histories

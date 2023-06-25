@@ -3,7 +3,7 @@ const router = express.Router();
 
 // Rute: /mitra
 router.get('/', (req, res) => {
-  res.send('Administrators Route');
+  res.json('Administrators Route');
 });
 
 
