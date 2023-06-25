@@ -30,6 +30,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
           source: "."
           target: ${{ secrets.PATH }}
 
@@ -38,6 +39,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
           script: |
             cd ${{ secrets.PATH }}
             npm install
@@ -47,7 +49,8 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
           script: |
-            sudo -S <<< ${{ secrets.PASSWORD }} pm2 restart all
+            pm2 restart api-samcash
 
      
