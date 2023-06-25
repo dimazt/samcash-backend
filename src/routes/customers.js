@@ -5,7 +5,11 @@ const router = express.Router();
 
 // Rute: /mitra
 router.get('/', (req, res) => {
-  res.send('Customers Route');
+  res.json({
+    name : 'api customers',
+    version : '1.0.0',
+    author : 'Samdev'
+  });
 });
 
 
