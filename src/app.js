@@ -7,6 +7,9 @@ const ClientError = require("./app/helpers/response/ClientError");
 const SuccessResponse = require("./app/helpers/response/SuccessResponse");
 const successResponseMiddleware = require("./app/helpers/response/SuccessResponse");
 const app = express();
+require("dotenv").config;
+
+
 app.use("/public", express.static("public"));
 app.use(bodyParser.json());
 app.use(bodyParser.text());
