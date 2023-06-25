@@ -1,33 +1,53 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
+name: Main Workflows
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Yarn Setup
-    # You may pin to the exact commit or the version.
-    # uses: DerYeger/yarn-setup-action@f55be5383ea94f5eb25b20aee609af4603a68dde
-      uses: DerYeger/yarn-setup-action@v1.0.1
-      with:
-        # The version of Node.js that will be used
-           node-version: 16
-    - run: yarn ci
-    - run: npm run build --if-present
-    - run: npm test
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js and Yarn
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+          curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+          echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+          sudo apt-get update
+          sudo apt-get install -y nodejs yarn
+          
+      - name: Install dependencies on GitHub Actions
+        run: |
+          yarn install
+
+      - name: Deploy to Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          source: "."
+          target: ${{ secrets.PATH }}
+
+      - name: Install Dependencies on Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          script: |
+            cd ${{ secrets.PATH }}
+            npm install
+
+      - name: Restart PM2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          script: |
+            sudo -S <<< ${{ secrets.PASSWORD }} pm2 restart all
+
+     
